@@ -1,8 +1,45 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject GlobalVariables GlobalVariables
 
 
 <PageTitle>Home</PageTitle>
-
-<MudPaper>
-    Hej
+<MudPaper Height="50vh" Class="d-flex justify-center">
+    <MudImage Height="200" Width="1000" Src="Images/pumpire.webp"></MudImage>
 </MudPaper>
+<MudPaper Height="50vh" Width="100%" Class="d-flex justify-center align-end">
+
+    <MudGrid Class="ma-2">
+        <MudItem xs="6">
+            <MudTextField @bind-Text="GlobalVariables.PlayerOneName" T="string" Placeholder="Enter first player name"></MudTextField>
+        </MudItem>
+        <MudItem xs="6">
+            <MudTextField @bind-Text="GlobalVariables.PlayerTwoName" T="string" Placeholder="Enter second player name"></MudTextField>
+        </MudItem>
+        <MudItem xs="6">
+            <MudTextField @bind-Text="GlobalVariables.UmpireName" T="string" Placeholder="Enter your name"></MudTextField>
+        </MudItem>
+        <MudItem xs="6">
+            <MudTextField @bind-Value="GlobalVariables.NumberOfSetsInGame" T="int" Placeholder="Enter number of sets in match"></MudTextField>
+        </MudItem>
+        <MudItem xs="12">
+            <div class="d-flex align-center justify-center">
+                <MudButton OnClick="NavigateToMatch">New Match!</MudButton>
+            </div>
+        </MudItem>
+
+    </MudGrid>
+</MudPaper>
+
+
+@code{
+    private string _pathToPumpire = System.AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\net9.0\", @"Components\Images\pumpire.webp");
+
+    private void NavigateToMatch()
+    {
+        Console.WriteLine(_pathToPumpire);
+        NavigationManager.NavigateTo("Match");
+    }
+
+}

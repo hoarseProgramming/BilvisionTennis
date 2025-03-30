@@ -1,0 +1,110 @@
+﻿@page "/Match"
+@rendermode InteractiveServer
+@using BilvisionTennis.TennisGame
+@using BilvisionTennis.Components.RazorComponents
+@inject GlobalVariables GlobalVariables
+
+<PageTitle>Match!</PageTitle>
+
+<MudGrid>
+	<MudItem xs="12">
+		<Scoreboard @ref="_scoreboard" Score="@_score"></Scoreboard>
+	</MudItem>
+
+	<MudItem xs="6">
+		<div class="d-flex align-center justify-center">
+			<MudButton @ref="_scorePointToPlayerOneButton"
+			Disabled="_match.CurrentSet.CurrentGame.HasWinner"
+			OnClick="@((e) => OnButtonClicked(_scorePointToPlayerOneButton, 1))">
+				Player Scored
+			</MudButton>
+		</div>
+	</MudItem>
+	<MudItem xs="6">
+		<div class="d-flex align-center justify-center">
+			<MudButton @ref="_scorePointToPlayerTwoButton" 
+			Disabled="_match.CurrentSet.CurrentGame.HasWinner" 
+			OnClick="@((e) => OnButtonClicked(_scorePointToPlayerTwoButton, 2))">
+				Player Scored
+			</MudButton>
+		</div>
+	</MudItem>
+	<MudItem xs="6">
+		<div class="d-flex align-center justify-center">
+			<MudButton @ref="_startNextGameButton"
+			Disabled="!_match.CurrentSet.CurrentGame.HasWinner || _match.CurrentSet.HasWinner"
+			OnClick="@((e) => OnButtonClicked(_startNextGameButton))">
+				Start next game!
+			</MudButton>
+		</div>
+	</MudItem>
+	<MudItem xs="6">
+		<div class="d-flex align-center justify-center">
+			<MudButton @ref="_startNextSetButton"
+			Disabled="!_match.CurrentSet.HasWinner || _match.Winner is not null"
+			OnClick="@((e) => OnButtonClicked(_startNextSetButton))">
+				Start next set!
+			</MudButton>
+		</div>
+	</MudItem>
+	<MudItem xs="12">
+		<div class="d-flex justify-center">
+			<h3>Umpire: @_match.Umpire.Name  |   Server: @(_match.PlayerOne.IsServer ? _match.PlayerOne.Name : _match.PlayerTwo.Name)</h3>
+		</div>
+	</MudItem>
+	<MudItem xs="12">
+		<div class="d-flex justify-center">
+			<h3>Call to make: @_match.CurrentSet.CurrentGame.VerbalScore</h3>
+		</div>
+	</MudItem>
+</MudGrid>
+
+@code {
+
+	private TennisMatch _match;
+	private string _score = string.Empty;
+	private Scoreboard _scoreboard = new();
+
+	private MudButton _scorePointToPlayerOneButton = new();
+	private MudButton _scorePointToPlayerTwoButton = new();
+	private MudButton _startNextGameButton = new();
+	private MudButton _startNextSetButton = new();
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+
+		string playerOneName = String.IsNullOrEmpty(GlobalVariables.PlayerOneName) ? "Player One" : GlobalVariables.PlayerOneName;
+		string playerTwoName = String.IsNullOrEmpty(GlobalVariables.PlayerTwoName) ? "Player Two" : GlobalVariables.PlayerTwoName;
+		string umpireName = String.IsNullOrEmpty(GlobalVariables.UmpireName) ? "Umpire" : GlobalVariables.UmpireName;
+		int numberOfSets = GlobalVariables.NumberOfSetsInGame == 0 ? 5 : GlobalVariables.NumberOfSetsInGame;
+
+		_match = new(playerOneName, playerTwoName, umpireName, numberOfSets);
+		_score = _match.Score();
+	}
+
+	private void OnButtonClicked(MudButton buttonClicked, int playerNumber = 0)
+	{
+		if (buttonClicked == _scorePointToPlayerOneButton)
+		{
+			_match.Umpire.ScorePointTo(1);
+		}
+		else if (buttonClicked == _scorePointToPlayerTwoButton)
+		{
+			_match.Umpire.ScorePointTo(2);
+		}
+		else if (buttonClicked == _startNextGameButton)
+		{
+			_match.Umpire.StartNewGame();
+		}
+		else
+		{
+			_match.Umpire.StartNewSet();
+		}
+
+		_scoreboard.Score = _match.Score();
+		_scoreboard.Update();
+
+		StateHasChanged();
+	}
+}

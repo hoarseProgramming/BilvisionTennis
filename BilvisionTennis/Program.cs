@@ -1,3 +1,4 @@
+using BilvisionTennis;
 using BilvisionTennis.Components;
 using MudBlazor.Services;
 
@@ -5,10 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddMudServices();
-
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddSingleton<GlobalVariables>();
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 

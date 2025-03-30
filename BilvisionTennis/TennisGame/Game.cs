@@ -1,39 +1,19 @@
-﻿namespace BilvisionTennis.TennisGame;
+﻿using static BilvisionTennis.TennisGame.TennisPoints;
 
-public class Game(Player playerOne, Player playerTwo, Umpire umpire, bool isFirstGameInSet = false)
+namespace BilvisionTennis.TennisGame;
+
+public class Game
 {
-    public Player PlayerOne { get; } = playerOne;
-    public Player PlayerTwo { get; } = playerTwo;
-    public Umpire Umpire { get; } = umpire;
-    public string Score { get; set; } = $"{Point.Love} - {Point.Love}";
-    private readonly bool _isFirstGameInSet = isFirstGameInSet;
-    private readonly Random _random = new Random();
-    public bool GameHasWinner { get; set; }
-
-    private void SetupGame()
-    {
-        Umpire.Game = this;
-        
-        if (_isFirstGameInSet)
-        {
-            Umpire.DecideServerByCoinToss();
-        }
-        else
-        {
-            PlayerOne.IsServer = !PlayerOne.IsServer;
-            PlayerTwo.IsServer = !PlayerTwo.IsServer;
-        }
-    }
-
-    public void ScorePointTo(int playerNumber)
-    {
-        if (playerNumber == 1)
-        {
-            Umpire.CalculateScore(winner: PlayerOne, loser: PlayerTwo);
-        }
-        else
-        {
-            Umpire.CalculateScore(winner: PlayerTwo, loser: PlayerOne);
-        }
-    }
+    //public Player PlayerOne { get; }
+    //public Player PlayerTwo { get; }
+    //public Umpire Umpire { get; }
+    public string WrittenScore { get; set; } = $"{WrittenGamePoints[0]} | {WrittenGamePoints[0]}";
+    public string VerbalScore { get; set; } = $"{VerbalGamePoint.Love} | {VerbalGamePoint.Love}";
+    public bool HasWinner { get; set; }
+    //public Game(Player playerOne, Player playerTwo, Umpire umpire)
+    //{
+    //    PlayerOne = playerOne;
+    //    PlayerTwo = playerTwo;
+    //    Umpire = umpire;
+    //}
 }
