@@ -21,11 +21,13 @@
             <MudTextField @bind-Text="GlobalVariables.UmpireName" T="string" Placeholder="Enter your name"></MudTextField>
         </MudItem>
         <MudItem xs="6">
-            <MudTextField @bind-Value="GlobalVariables.NumberOfSetsInGame" T="int" Placeholder="Enter number of sets in match"></MudTextField>
+            <MudTextField @bind-Value="GlobalVariables.NumberOfSetsInGame" T="int" HelperText="Enter number of sets in match"></MudTextField>
         </MudItem>
         <MudItem xs="12">
             <div class="d-flex align-center justify-center">
-                <MudButton OnClick="NavigateToMatch">New Match!</MudButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary" 
+                           OnClick="NavigateToMatch">New Match!</MudButton>
             </div>
         </MudItem>
 
