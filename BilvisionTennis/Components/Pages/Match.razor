@@ -14,17 +14,21 @@
 	<MudItem xs="6">
 		<div class="d-flex align-center justify-center">
 			<MudButton @ref="_scorePointToPlayerOneButton"
-			Disabled="_match.CurrentSet.CurrentGame.HasWinner"
-			OnClick="@((e) => OnButtonClicked(_scorePointToPlayerOneButton, 1))">
+				Variant="Variant.Filled"
+				Color="Color.Primary"
+				Disabled="_match.CurrentSet.CurrentGame.HasWinner"
+				OnClick="@((e) => OnButtonClicked(_scorePointToPlayerOneButton, 1))">
 				Player Scored
 			</MudButton>
 		</div>
 	</MudItem>
 	<MudItem xs="6">
 		<div class="d-flex align-center justify-center">
-			<MudButton @ref="_scorePointToPlayerTwoButton" 
-			Disabled="_match.CurrentSet.CurrentGame.HasWinner" 
-			OnClick="@((e) => OnButtonClicked(_scorePointToPlayerTwoButton, 2))">
+			<MudButton @ref="_scorePointToPlayerTwoButton"
+				Variant="Variant.Filled"
+				Color="Color.Primary"
+				Disabled="_match.CurrentSet.CurrentGame.HasWinner" 
+				OnClick="@((e) => OnButtonClicked(_scorePointToPlayerTwoButton, 2))">
 				Player Scored
 			</MudButton>
 		</div>
@@ -32,8 +36,10 @@
 	<MudItem xs="6">
 		<div class="d-flex align-center justify-center">
 			<MudButton @ref="_startNextGameButton"
-			Disabled="!_match.CurrentSet.CurrentGame.HasWinner || _match.CurrentSet.HasWinner"
-			OnClick="@((e) => OnButtonClicked(_startNextGameButton))">
+				Variant="Variant.Filled"
+				Color="Color.Primary"
+				Disabled="!_match.CurrentSet.CurrentGame.HasWinner || _match.CurrentSet.HasWinner"
+				OnClick="@((e) => OnButtonClicked(_startNextGameButton))">
 				Start next game!
 			</MudButton>
 		</div>
@@ -41,8 +47,10 @@
 	<MudItem xs="6">
 		<div class="d-flex align-center justify-center">
 			<MudButton @ref="_startNextSetButton"
-			Disabled="!_match.CurrentSet.HasWinner || _match.Winner is not null"
-			OnClick="@((e) => OnButtonClicked(_startNextSetButton))">
+				Variant="Variant.Filled"
+				Color="Color.Primary"
+				Disabled="!_match.CurrentSet.HasWinner || _match.Winner is not null"
+				OnClick="@((e) => OnButtonClicked(_startNextSetButton))">
 				Start next set!
 			</MudButton>
 		</div>
