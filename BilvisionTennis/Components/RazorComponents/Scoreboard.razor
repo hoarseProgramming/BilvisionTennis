@@ -1,0 +1,69 @@
+﻿@rendermode InteractiveServer
+
+@if (_scoreSplit.Length > 0)
+{
+	<MudGrid Class="pa-4" Spacing="2">
+		<MudItem xs="2">
+			<MudText Typo="Typo.body1">@_scoreSplit[0]</MudText>
+		</MudItem>
+		<MudItem xs="5">
+			<MudText Align="Align.Center" Typo="Typo.body1"><b>@_scoreSplit[1]</b></MudText>
+		</MudItem>
+		<MudItem xs="5">
+			<MudText Align="Align.Center" Typo="Typo.body1"><b>@_scoreSplit[2]</b></MudText>
+		</MudItem>
+
+		<MudItem xs="2">
+			<MudText Typo="Typo.body1">@_scoreSplit[3]</MudText>
+		</MudItem>
+		<MudItem xs="5">
+			<MudText Align="Align.Center" Typo="Typo.body1"><b>@_scoreSplit[4]</b></MudText>
+		</MudItem>
+		<MudItem xs="5">
+			<MudText Align="Align.Center" Typo="Typo.body1"><b>@_scoreSplit[5]</b></MudText>
+		</MudItem>
+
+		<MudItem xs="2">
+			<MudText Typo="Typo.body1">@_scoreSplit[6]</MudText>
+		</MudItem>
+		<MudItem xs="5">
+			<MudText Align="Align.Center" Typo="Typo.body1"><b>@_scoreSplit[7]</b></MudText>
+		</MudItem>
+		<MudItem xs="5">
+			<MudText Align="Align.Center" Typo="Typo.body1"><b>@_scoreSplit[8]</b></MudText>
+		</MudItem>
+
+		<MudItem xs="2">
+			<MudText Typo="Typo.body1">@_scoreSplit[9]</MudText>
+		</MudItem>
+		<MudItem xs="5">
+			<MudText Align="Align.Center" Typo="Typo.body1"><b>@_scoreSplit[10]</b></MudText>
+		</MudItem>
+		<MudItem xs="5">
+			<MudText Align="Align.Center" Typo="Typo.body1"><b>@_scoreSplit[11]</b></MudText>
+		</MudItem>
+	</MudGrid>
+}
+	
+
+@code {
+	[Parameter]
+	public string Score { get; set; }
+	private string[] _scoreSplit = [];
+
+	protected override void OnInitialized()
+	{
+		_scoreSplit = SplitScore();
+	}
+
+	public void Update()
+	{
+		_scoreSplit = SplitScore();
+		StateHasChanged();
+	}
+
+	private string[] SplitScore()
+	{
+		return Score.Split(':', '\n', '|');
+	}
+}

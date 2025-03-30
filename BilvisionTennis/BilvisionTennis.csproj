@@ -7,11 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\lib\" />
+      <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+      <PackageReference Include="MudBlazor" Version="8.3.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MudBlazor" Version="8.3.0" />
+      <None Include="wwwroot\Images\pumpire.webp" />
     </ItemGroup>
 
 </Project>
