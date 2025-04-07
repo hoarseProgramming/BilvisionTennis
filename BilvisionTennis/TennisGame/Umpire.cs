@@ -6,7 +6,20 @@ public class Umpire
 {
     public required string Name { get; set; }
     public TennisMatch? Match { get; set; }
+    public void DecideServerByCoinToss()
+    {
+        var random = new Random();
+        string coinTossResult = random.Next(100) < 50 ? "heads" : "tails";
 
+        if (coinTossResult == "heads")
+        {
+            Match.PlayerOne.IsServer = true;
+        }
+        else
+        {
+            Match.PlayerTwo.IsServer = true;
+        }
+    }
     public void StartNewMatch()
     {
         DecideServerByCoinToss();
@@ -28,24 +41,14 @@ public class Umpire
         Match.PlayerOne.PointsScored = 0;
         Match.PlayerTwo.PointsScored = 0;
 
-        Match.PlayerOne.IsServer = !Match.PlayerOne.IsServer;
-        Match.PlayerTwo.IsServer = !Match.PlayerTwo.IsServer;
+        if (!isFirstGameOfMatch)
+        {
+            Match.PlayerOne.IsServer = !Match.PlayerOne.IsServer;
+            Match.PlayerTwo.IsServer = !Match.PlayerTwo.IsServer;
+        }
     }
-    public void DecideServerByCoinToss()
-    {
-        var random = new Random();
-        string coinTossResult = random.Next(100) < 50 ? "heads" : "tails";
 
-        if (coinTossResult == "heads")
-        {
-            Match.PlayerOne.IsServer = true;
-        }
-        else
-        {
-            Match.PlayerTwo.IsServer = true;
-        }
-    }
-    public void ScorePointTo(int playerNumber)
+    public void ScorePointToPlayer(int playerNumber)
     {
         if (Match.CurrentSet.CurrentGame.HasWinner)
         {
@@ -54,18 +57,18 @@ public class Umpire
 
         if (playerNumber == 1)
         {
+            Match.PlayerOne.PointsScored++;
             CalculateGameScore(winner: Match.PlayerOne, loser: Match.PlayerTwo);
         }
         else
         {
+            Match.PlayerTwo.PointsScored++;
             CalculateGameScore(winner: Match.PlayerTwo, loser: Match.PlayerOne);
         }
     }
 
     public void CalculateGameScore(Player winner, Player loser)
     {
-        winner.PointsScored++;
-
         if (winner.PointsScored == 4 && loser.PointsScored == 4)
         {
             winner.PointsScored--;
