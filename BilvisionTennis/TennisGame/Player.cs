@@ -1,4 +1,4 @@
-﻿namespace BilvisionTennis.TennisGame;
+﻿namespace BilvisionTennis.Frontend.TennisGame;
 
 public class Player
 {

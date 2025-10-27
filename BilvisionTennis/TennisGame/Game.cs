@@ -1,6 +1,7 @@
-﻿using static BilvisionTennis.TennisGame.TennisPoints;
+﻿
+namespace BilvisionTennis.Frontend.TennisGame;
+using static BilvisionTennis.Frontend.TennisGame.TennisPoints;
 
-namespace BilvisionTennis.TennisGame;
 
 public class Game
 {

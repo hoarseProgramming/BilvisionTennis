@@ -1,9 +1,9 @@
 ﻿
-namespace BilvisionTennis.TennisGame
+namespace BilvisionTennis.Frontend.TennisGame;
+
+public class Set
 {
-    public class Set
-    {
-        public bool HasWinner { get; set; }
-        public Game CurrentGame { get; set; }
-    }
+    public bool HasWinner { get; set; }
+    public Game CurrentGame { get; set; }
 }
+

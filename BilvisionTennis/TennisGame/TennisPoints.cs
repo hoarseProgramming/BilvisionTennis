@@ -1,5 +1,4 @@
-﻿namespace BilvisionTennis.TennisGame;
-
+﻿namespace BilvisionTennis.Frontend.TennisGame;
 public static class TennisPoints
 {
     public static Dictionary<int, string> WrittenGamePoints = new()

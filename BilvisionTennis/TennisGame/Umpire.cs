@@ -1,6 +1,8 @@
-﻿using static BilvisionTennis.TennisGame.TennisPoints;
+﻿
 
-namespace BilvisionTennis.TennisGame;
+namespace BilvisionTennis.Frontend.TennisGame;
+using static BilvisionTennis.Frontend.TennisGame.TennisPoints;
+
 
 public class Umpire
 {

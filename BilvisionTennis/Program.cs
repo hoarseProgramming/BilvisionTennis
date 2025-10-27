@@ -1,5 +1,6 @@
+
 using BilvisionTennis;
-using BilvisionTennis.Components;
+using BilvisionTennis.Frontend.Components;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
