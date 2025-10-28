@@ -1,0 +1,6 @@
+query getUmpires {
+    umpires {
+        name
+        id
+    }
+}

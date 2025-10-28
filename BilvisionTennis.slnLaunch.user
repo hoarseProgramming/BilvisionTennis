@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Api+Frontend",
+    "Projects": [
+      {
+        "Path": "BilvisionTennis\\BilvisionTennis.Frontend.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "BilvisionTennis.Api\\BilvisionTennis.Api\\BilvisionTennis.Api.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

@@ -1,0 +1,8 @@
+mutation AddUmpire($input: AddUmpireInput!) {
+	addUmpire(input: $input) {
+		umpire {
+			id
+			name
+		}
+	}
+}

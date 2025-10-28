@@ -1,0 +1,116 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  game(id: Int!): Game
+  match(id: Int!): Match
+  umpires: [Umpire!]!
+  umpire(id: Int!): Umpire
+}
+
+type Mutation {
+  addGame(input: AddGameInput!): AddGamePayload!
+  addMatch(input: AddMatchInput!): AddMatchPayload!
+  addPlayer(input: AddPlayerInput!): AddPlayerPayload!
+  addRally(input: AddRallyInput!): AddRallyPayload!
+  addSet(input: AddSetInput!): AddSetPayload!
+  addUmpire(input: AddUmpireInput!): AddUmpirePayload!
+}
+
+type Game {
+  sets: [Set!]!
+  id: Int!
+  number: Int!
+}
+
+type Match {
+  players: [Player!]!
+  games: [Game!]!
+  id: Int!
+  wInnerId: Int
+  winner: Player
+  umpire: Umpire!
+}
+
+type Set {
+  id: Int!
+  number: Int!
+  rallies: [Rally!]!
+}
+
+type Player {
+  id: Int!
+  name: String!
+  matches: [Match!]!
+  wonMatches: [Match!]!
+}
+
+type Umpire {
+  id: Int!
+  name: String!
+  matches: [Match!]!
+}
+
+input AddUmpireInput {
+  name: String!
+}
+
+input AddSetInput {
+  number: Int!
+  gameId: Int!
+}
+
+input AddRallyInput {
+  setId: Int!
+  number: Int!
+  scorerId: Int!
+}
+
+type Rally {
+  id: Int!
+  shotNumber: Int!
+  scorer: Player!
+}
+
+input AddPlayerInput {
+  name: String!
+}
+
+input AddMatchInput {
+  players: [Int!]!
+  umpireId: Int!
+}
+
+input AddGameInput {
+  matchId: Int!
+  number: Int!
+}
+
+type AddGamePayload {
+  game: Game
+}
+
+type AddMatchPayload {
+  match: Match
+}
+
+type AddPlayerPayload {
+  player: Player
+}
+
+type AddRallyPayload {
+  rally: Rally
+}
+
+type AddSetPayload {
+  set: Set
+}
+
+type AddUmpirePayload {
+  umpire: Umpire
+}
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION

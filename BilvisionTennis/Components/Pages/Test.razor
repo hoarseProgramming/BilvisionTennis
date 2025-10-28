@@ -1,0 +1,39 @@
+﻿@inject ITennisClient TennisClient
+
+@page "/test"
+
+<MudButton OnClick=AddPlayer>Add Rafael</MudButton>
+
+
+
+<ul>
+    @foreach (var umpire in umpires)
+    {
+        <li>@umpire.Name @umpire.Id </li>
+    }
+</ul>
+
+
+@code {
+    private List<IGetUmpires_Umpires> umpires = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await TennisClient.GetUmpires.ExecuteAsync();
+        umpires = result.Data?.Umpires.ToList() ?? new();
+    }
+    private async Task AddPlayer()
+    {
+        var createResult = await TennisClient.AddPlayer.ExecuteAsync(new AddPlayerInput
+            {
+                Name = "Rafael"
+            });
+
+        if(createResult.IsErrorResult())
+        {
+            return;
+        }
+
+
+    }
+}

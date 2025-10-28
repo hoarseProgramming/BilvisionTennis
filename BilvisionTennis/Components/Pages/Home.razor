@@ -1,47 +1,83 @@
 ﻿@page "/"
-@rendermode InteractiveServer
+@using BilvisionTennis.Frontend.Classes
+
 @inject NavigationManager NavigationManager
-@inject GlobalVariables GlobalVariables
+@inject ITennisClient TennisClient
 
-
-<PageTitle>Home</PageTitle>
+<PageTitle>Welcome</PageTitle>
 <MudPaper Height="50vh" Class="d-flex justify-center">
     <MudImage Height="200" Width="1000" Src="Images/pumpire.webp"></MudImage>
 </MudPaper>
-<MudPaper Height="50vh" Width="100%" Class="d-flex justify-center align-end">
+<MudPaper Height="50vh" Width="100%" Class="d-flex justify-center align-center">
 
-    <MudGrid Class="ma-2">
-        <MudItem xs="6">
-            <MudTextField @bind-Text="GlobalVariables.PlayerOneName" T="string" Placeholder="Enter first player name"></MudTextField>
-        </MudItem>
-        <MudItem xs="6">
-            <MudTextField @bind-Text="GlobalVariables.PlayerTwoName" T="string" Placeholder="Enter second player name"></MudTextField>
-        </MudItem>
-        <MudItem xs="6">
-            <MudTextField @bind-Text="GlobalVariables.UmpireName" T="string" Placeholder="Enter your name"></MudTextField>
-        </MudItem>
-        <MudItem xs="6">
-            <MudTextField @bind-Value="GlobalVariables.NumberOfSetsInGame" T="int" HelperText="Enter number of sets in match"></MudTextField>
-        </MudItem>
+
+    <MudStack style="width: 500px">
+        <MudStack Row>
+            <MudTextField Label="Enter new Umpire name" @bind-value="NewUmpireName" Variant="Variant.Outlined"></MudTextField>
+            <MudButton OnClick="AddUmpire">Create</MudButton>
+        </MudStack>
+        <MudSelect @ref="_umpireSelect" Label="Choose Umpire" @bind-Value="_choosenUmpire" Variant="Variant.Outlined">
+            @foreach(var umpire in umpires)
+            {
+                <MudSelectItem Value="@umpire">@umpire.Name</MudSelectItem>
+            }
+
+        </MudSelect>
         <MudItem xs="12">
             <div class="d-flex align-center justify-center">
                 <MudButton Variant="Variant.Filled"
                            Color="Color.Primary" 
-                           OnClick="NavigateToMatch">New Match!</MudButton>
+                           OnClick=NavigateToMatchSettings>
+                           Go to match settings
+                       </MudButton>
             </div>
         </MudItem>
-
-    </MudGrid>
+    </MudStack>
 </MudPaper>
 
 
 @code{
+    public string NewUmpireName { get; set; } = "";
     private string _pathToPumpire = System.AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\net9.0\", @"Components\Images\pumpire.webp");
+    private List<FEUmpire> umpires = new();
+    private FEUmpire? _choosenUmpire = null;
+    private MudSelect<FEUmpire> _umpireSelect;
 
-    private void NavigateToMatch()
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await TennisClient.GetUmpires.ExecuteAsync();
+        umpires = result.Data?.Umpires.Select(u => new FEUmpire
+        {
+            Id = u.Id,
+            Name = u.Name
+        }).ToList() ?? [];
+    }
+    private async Task AddUmpire()
+    {
+        var createResult = await TennisClient.AddUmpire.ExecuteAsync(new AddUmpireInput
+        {
+            Name = NewUmpireName
+        });
+
+        if (createResult.IsErrorResult())
+        {
+            return;
+        }
+
+        var umpire = new FEUmpire
+            {
+                Id = createResult.Data.AddUmpire.Umpire.Id,
+                Name = createResult.Data.AddUmpire.Umpire.Name
+            };
+
+        umpires.Add(umpire);
+        _choosenUmpire = umpire;
+    }
+
+    private void NavigateToMatchSettings()
     {
         Console.WriteLine(_pathToPumpire);
-        NavigationManager.NavigateTo("Match");
+        NavigationManager.NavigateTo("match-settings");
     }
 
 }

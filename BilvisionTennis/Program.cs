@@ -12,6 +12,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSingleton<GlobalVariables>();
 builder.Services.AddMudServices();
+builder.Services.AddTennisClient().ConfigureHttpClient(client => client.BaseAddress = new Uri("https://localhost:7000/graphql/"));
 
 var app = builder.Build();
 

@@ -1,0 +1,23 @@
+name: tennis
+
+services:
+  tennis-postgres:
+    container_name: tennis-postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: tennis
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: tennis
+    networks: [tennis-network]
+    ports: ["5432:5432"]
+    volumes:
+      - type: volume
+        source: postgres-data
+        target: /var/lib/postgresql/data
+
+networks:
+  tennis-network:
+    name: tennis
+
+volumes:
+  postgres-data:

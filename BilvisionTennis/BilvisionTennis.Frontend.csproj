@@ -9,8 +9,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <GraphQL Remove="AddPlayer.graphql" />
+      <GraphQL Remove="AddUmpire.graphql" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
       <PackageReference Include="MudBlazor" Version="8.3.0" />
+      <PackageReference Include="StrawberryShake.Blazor" Version="15.1.11" />
     </ItemGroup>
 
     <ItemGroup>
