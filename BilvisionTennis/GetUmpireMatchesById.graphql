@@ -1,0 +1,27 @@
+query GetUmpireMatchesById($id: Int!) {
+  umpire(id: $id) {
+    name
+    matches {
+      id
+      players {
+        name
+      }
+      winner {
+        id
+      }
+      games {
+        id
+        sets {
+          id
+          number
+          rallies {
+            shotNumber
+            scorer {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

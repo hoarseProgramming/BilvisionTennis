@@ -47,7 +47,15 @@
         <MudItem xs="4">
             <MudTextField  @bind-Value="GlobalStore.NumberOfSetsInGame" T="int" HelperText="Enter number of sets in match"></MudTextField>
         </MudItem>
-        <MudItem xs="12">
+        <MudItem xs="6">
+            <div class="d-flex align-center justify-center">
+                <MudButton Disabled="@(GlobalStore.OldMatches.Count < 1)"
+                            Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="NavigateToHome">Go analyze some games</MudButton>
+            </div>
+        </MudItem>
+        <MudItem xs="6">
             <div class="d-flex align-center justify-center">
                 <MudButton Disabled="@(_playerOneValue is null || _playerTwoValue is null)" Variant="Variant.Filled"
                            Color="Color.Primary" 
@@ -88,6 +96,11 @@
         await newMatch.Umpire.StartNewMatch(addMatchResult.Data.AddMatch.Match.Games[0].Id, addMatchResult.Data.AddMatch.Match.Games[0].Sets[0].Id);
         GlobalStore.CurrentMatch = newMatch;
         NavigationManager.NavigateTo("Match");
+    }
+
+    private void NavigateToHome()
+    {
+        NavigationManager.NavigateTo("/");
     }
 
     protected override async Task OnInitializedAsync()

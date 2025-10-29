@@ -8,8 +8,9 @@ namespace BilvisionTennis
 
         public Player PlayerOne { get; set; } = new() { Name = "PlayerOne" };
         public Player PlayerTwo { get; set; } = new() { Name = "PlayerTwo" };
-        public Umpire Umpire { get; set; } = new(tennisClient) { Name = "Umpire" };
+        public Umpire? Umpire { get; set; }
         public TennisMatch? CurrentMatch { get; set; }
         public int NumberOfSetsInGame { get; set; }
+        public List<TennisMatch> OldMatches { get; set; } = [];
     }
 }

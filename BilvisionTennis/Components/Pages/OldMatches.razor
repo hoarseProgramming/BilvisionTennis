@@ -1,0 +1,42 @@
+﻿@page "/old-matches"
+@using BilvisionTennis.Frontend.TennisGame
+@inject GlobalStore GlobalStore
+
+<MudSelect Label="Choose match to analyze" T="TennisMatch" ValueChanged="OnValueChanged" Variant="Variant.Outlined">
+    @foreach (var match in GlobalStore.OldMatches)
+    {
+        <MudSelectItem Value="@match">@match.PlayerOne.Name vs @match.PlayerTwo.Name</MudSelectItem>
+    }
+</MudSelect>
+
+@if(_choosenMatch is not null)
+{
+    <MudGrid>
+        <MudItem xs=12>Winner was @_choosenMatch.Winner</MudItem>
+        @foreach(var set in _choosenMatch.Sets)
+        {
+            <MudItem xs="6">
+                <MudText>Set @set.Number</MudText>
+                    @foreach(Game game in set.Games)
+                    {
+                        <MudText>Game @game.Number</MudText>
+                        <MudList T="string">
+                        @foreach(Rally rally in game.Rallies)
+                        {
+                            <MudListItem Text=@($"Shot {rally.Number} won by {rally.Winner.Name}")></MudListItem>
+                        }
+                        </MudList>
+                    }
+            </MudItem>
+        }
+    </MudGrid> 
+}
+
+@code {
+    TennisMatch? _choosenMatch = null;
+
+    private async Task OnValueChanged(TennisMatch? selectedMatch)
+    {
+        _choosenMatch = selectedMatch;
+    }
+}

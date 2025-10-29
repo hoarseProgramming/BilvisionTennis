@@ -18,7 +18,7 @@ namespace BilvisionTennisAPI.GraphQL.GraphQL.Matches
 
             var match = new Match { Players = players, Umpire = umpire };
 
-            var game = new Game { Number = 0, Sets = new List<Set> { new Set { Number = 0 } } };
+            var game = new Game { Number = 1, Sets = new List<Set> { new Set { Number = 1 } } };
 
             match.Games.Add(game);
 

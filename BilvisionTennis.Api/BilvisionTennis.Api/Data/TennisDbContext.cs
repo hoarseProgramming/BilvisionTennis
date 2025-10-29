@@ -18,7 +18,7 @@ namespace BilvisionTennisAPI.GraphQL.Data
 
             modelBuilder.Entity<Match>().HasMany(m => m.Players).WithMany(p => p.Matches);
             modelBuilder.Entity<Match>().HasOne(m => m.Winner).WithMany(p => p.WonMatches).HasForeignKey(m => m.WInnerId);
-            modelBuilder.Entity<Umpire>().HasMany(u => u.Matches).WithOne(m => m.Umpire);
+            modelBuilder.Entity<Match>().HasOne(u => u.Umpire).WithMany(m => m.Matches).HasForeignKey(m => m.UmpireId);
         }
     }
 }

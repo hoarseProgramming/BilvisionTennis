@@ -1,6 +1,12 @@
 ![Pocket Umpire](./BilvisionTennis/wwwroot/Images/pumpire.webp)
 
+## !Comes in two versions!
+
+The api branch makes you able to save and analyze the matches you've umpered.
+Just make sure to navigate to Bilvision.Api and do your docker compose up -d and it should work.
+
 ## Pocket Umpire!
+
 So you're taking up umpering tennis games?
 
 Got no clue what you're doing, but wan't to ump som games anyway?
@@ -14,6 +20,7 @@ Welcome to "Pocket umpire", your all-in-one helper for scoring and keeping track
 Don't worry, it's easy!
 
 ### Step 1
+
 Input player names, your name, and number of sets in the match and press "NEW MATCH!"
 
 ![](./BilvisionTennis/wwwroot/Images/home.png)

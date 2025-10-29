@@ -8,6 +8,7 @@ namespace BilvisionTennisAPI.GraphQL.Data
         public Player? Winner { get; set; }
         public List<Game> Games { get; set; } = [];
         public List<Player> Players { get; set; } = [];
+        public int UmpireId { get; set; }
         public required Umpire Umpire { get; set; }
     }
 }

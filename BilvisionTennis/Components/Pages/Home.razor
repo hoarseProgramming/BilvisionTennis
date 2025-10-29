@@ -16,7 +16,7 @@
             <MudTextField Label="Enter new Umpire name" @bind-value="NewUmpireName" Variant="Variant.Outlined"></MudTextField>
             <MudButton OnClick="AddUmpire">Create</MudButton>
         </MudStack>
-        <MudSelect @ref="_umpireSelect" Label="Choose Umpire" @bind-Value="_choosenUmpire" Variant="Variant.Outlined">
+        <MudSelect @ref="_umpireSelect" T="Umpire" Label="Choose Umpire" Variant="Variant.Outlined" @bind-Value="_choosenUmpire">
             @foreach(var umpire in umpires)
             {
                 <MudSelectItem Value="@umpire">@umpire.Name</MudSelectItem>
@@ -25,11 +25,21 @@
         </MudSelect>
         <MudItem xs="12">
             <div class="d-flex align-center justify-center">
-                <MudButton Variant="Variant.Filled"
+                <MudButton Disabled=@(_choosenUmpire is null)
+                            Variant="Variant.Filled"
                            Color="Color.Primary" 
                            OnClick=NavigateToMatchSettings>
                            Go to match settings
                        </MudButton>
+            </div>
+        </MudItem>
+        <MudItem xs="12">
+            <div class="d-flex align-center justify-center">
+                <MudButton Disabled=@(_choosenUmpire is null || _choosenUmpire.Matches.Count == 0) Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick=NavigateToOldMatches>
+                    Browse old matches
+                </MudButton>
             </div>
         </MudItem>
     </MudStack>
@@ -40,17 +50,52 @@
     public string NewUmpireName { get; set; } = "";
     private string _pathToPumpire = System.AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\net9.0\", @"Components\Images\pumpire.webp");
     private List<Umpire> umpires = new();
-    private Umpire? _choosenUmpire = null;
+    private Umpire? _choosenUmpire
+    {
+        get => _selectedUmpire;
+        set
+        {
+            _selectedUmpire = value;
+            GlobalStore.OldMatches = _selectedUmpire?.Matches ?? new();
+        }
+    }
+    private Umpire? _selectedUmpire;
     private MudSelect<Umpire> _umpireSelect;
 
     protected override async Task OnInitializedAsync()
     {
         var result = await TennisClient.GetUmpires.ExecuteAsync();
-        umpires = result.Data?.Umpires.Select(u => new Umpire(TennisClient)
-        {
-            Id = u.Id,
-            Name = u.Name
-        }).ToList() ?? [];
+        umpires = result.Data?.Umpires.Select(u => new Umpire(TennisClient, GlobalStore)
+            {
+                Id = u.Id,
+                Name = u.Name,
+                Matches = u.Matches.Select(m => new TennisMatch(
+                    new Player { Name = m.Players[0].Name },
+                    new Player { Name = m.Players[1].Name },
+                    new Umpire(TennisClient, GlobalStore) {Id = u.Id, Name = u.Name},
+                    0,
+                    m.Id
+                )
+                {
+                    Winner = new Player { Name = m.Winner.Name },
+                    Sets = m.Games.Select(g => new Set
+                    {
+                        Number = g.Number,
+                        Games = g.Sets.Select(s => new Game
+                        {
+                            Number = s.Number,
+                            Rallies = s.Rallies.Select(r => new Rally
+                            {
+                                Number = r.ShotNumber,
+                                Winner = new Player
+                                {
+                                    Name = r.Scorer.Name
+                                }
+                            }).ToList()
+                        }).ToList()
+                    }).ToList()
+                }).ToList()
+            }).ToList() ?? [];      
     }
     private async Task AddUmpire()
     {
@@ -64,7 +109,7 @@
             return;
         }
 
-        var umpire = new Umpire(TennisClient)
+        var umpire = new Umpire(TennisClient, GlobalStore)
             {
                 Id = createResult.Data.AddUmpire.Umpire.Id,
                 Name = createResult.Data.AddUmpire.Umpire.Name
@@ -80,4 +125,9 @@
         NavigationManager.NavigateTo("match-settings");
     }
 
+    private void NavigateToOldMatches()
+    {
+        GlobalStore.Umpire = _choosenUmpire;
+        NavigationManager.NavigateTo("old-matches");
+    }
 }

@@ -12,7 +12,7 @@ namespace BilvisionTennisAPI.GraphQL.GraphQL.Games
 
             if (match == null) throw new GraphQLException("The match wasn't found");
 
-            var game = new Game { Number = input.Number, Sets = new List<Set> { new Set { Number = 0 } } };
+            var game = new Game { Number = input.Number, Sets = new List<Set> { new Set { Number = 1 } } };
 
             match.Games.Add(game);
 

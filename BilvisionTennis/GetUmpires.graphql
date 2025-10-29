@@ -2,5 +2,29 @@ query getUmpires {
     umpires {
         name
         id
+        matches {
+          id
+          players {
+            name
+          }
+          winner {
+            id
+            name
+          }
+          games {
+            id
+            number
+            sets {
+              id
+              number
+              rallies {
+                shotNumber
+                scorer {
+                  name
+                }
+              }
+            }
+            }
+      }
     }
 }

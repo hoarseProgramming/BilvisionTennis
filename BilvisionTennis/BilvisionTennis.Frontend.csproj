@@ -15,6 +15,7 @@
       <GraphQL Remove="AddRally.graphql" />
       <GraphQL Remove="AddSet.graphql" />
       <GraphQL Remove="AddUmpire.graphql" />
+      <GraphQL Remove="GetUmpireMatchesById.graphql" />
       <GraphQL Remove="UpdateMatchWinner.graphql" />
     </ItemGroup>
 

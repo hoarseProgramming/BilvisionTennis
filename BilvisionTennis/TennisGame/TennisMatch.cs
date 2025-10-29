@@ -9,6 +9,7 @@ public class TennisMatch
     public Player? Winner { get; set; }
     public Set CurrentSet { get; set; }
     public int SetsInMatch { get; }
+    public List<Set> Sets { get; set; } = [];
 
     public TennisMatch(Player playerOne, Player playerTwo, Umpire umpire, int setsInMatch, int matchId)
     {
@@ -16,7 +17,7 @@ public class TennisMatch
         PlayerOne = playerOne;
         PlayerTwo = playerTwo;
         Umpire = umpire;
-        Umpire.Match = this;
+        Umpire.CurrentMatch = this;
         SetsInMatch = setsInMatch;
     }
 

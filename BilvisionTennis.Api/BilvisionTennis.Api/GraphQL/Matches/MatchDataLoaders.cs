@@ -27,8 +27,8 @@ namespace BilvisionTennisAPI.GraphQL.GraphQL.Matches
         {
             return await db.Umpires
                 .AsNoTracking()
-                .Where(m => umpireIds.Contains(m.Id))
-                .Select(u => u.Id, u => u.Matches, selector)
+                .Where(u => umpireIds.Contains(u.Id))
+                .Select(u => u.Id, m => m.Matches, selector)
                 .ToDictionaryAsync(r => r.Key, r => r.Value.ToArray(), cancellationToken);
         }
     }
