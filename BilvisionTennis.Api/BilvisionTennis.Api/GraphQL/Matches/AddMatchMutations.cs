@@ -22,7 +22,26 @@ namespace BilvisionTennisAPI.GraphQL.GraphQL.Matches
 
             match.Games.Add(game);
 
+            umpire.Matches.Add(match);
+
             db.Matches.Add(match);
+
+            await db.SaveChangesAsync(cancellationToken);
+
+            return match;
+        }
+
+        public static async Task<Match> UpdateMatchWinnerAsync(UpdateMatchWinnerInput input, TennisDbContext db, CancellationToken cancellationToken)
+        {
+            var winner = await db.Players.SingleOrDefaultAsync(p => p.Id == input.PlayerId);
+
+            if (winner is null) throw new GraphQLException("Winner not found");
+
+            var match = await db.Matches.FirstOrDefaultAsync(m => m.Id == input.MatchId);
+
+            if (match == null) throw new GraphQLException("Match not found");
+
+            match.Winner = winner;
 
             await db.SaveChangesAsync(cancellationToken);
 

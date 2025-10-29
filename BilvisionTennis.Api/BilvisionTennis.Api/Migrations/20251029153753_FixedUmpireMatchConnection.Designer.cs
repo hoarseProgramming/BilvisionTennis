@@ -2,6 +2,7 @@
 using BilvisionTennisAPI.GraphQL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BilvisionTennisAPI.GraphQL.Migrations
 {
     [DbContext(typeof(TennisDbContext))]
-    partial class TennisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251029153753_FixedUmpireMatchConnection")]
+    partial class FixedUmpireMatchConnection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

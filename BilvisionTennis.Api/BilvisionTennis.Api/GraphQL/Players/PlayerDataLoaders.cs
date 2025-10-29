@@ -19,6 +19,18 @@ namespace BilvisionTennisAPI.GraphQL.GraphQL.Players
                 .Select(s => s.Id, s => s.Players, selector)
                 .ToDictionaryAsync(r => r.Key, r => r.Value.ToArray(), cancellationToken);
         }
+
+        public static async Task<IReadOnlyDictionary<int, Player>> PlayerByIdAsync(
+      IReadOnlyList<int> ids,
+      TennisDbContext db,
+      ISelectorBuilder selector, CancellationToken cancellationToken)
+        {
+            return await db.Players
+                .AsNoTracking()
+                .Where(p => ids.Contains(p.Id))
+                .Select(p => p.Id, selector)
+                .ToDictionaryAsync(p => p.Id, cancellationToken);
+        }
     }
 
 }
