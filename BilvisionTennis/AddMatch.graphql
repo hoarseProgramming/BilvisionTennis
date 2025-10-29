@@ -1,0 +1,13 @@
+mutation AddMatch($input: AddMatchInput!) {
+	addMatch(input: $input) {
+		match {
+			id
+			games {
+				id
+				sets {
+					id
+				}
+			}
+		}
+	}
+}

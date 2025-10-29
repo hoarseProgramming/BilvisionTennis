@@ -1,7 +1,9 @@
 ﻿@page "/match-settings"
+@using BilvisionTennis.Frontend.TennisGame
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
-@inject GlobalVariables GlobalVariables
+@inject GlobalStore GlobalStore
+@inject ITennisClient TennisClient
 
 
 <PageTitle>Match Settings</PageTitle>
@@ -10,22 +12,44 @@
 </MudPaper>
 <MudPaper Height="50vh" Width="100%" Class="d-flex justify-center align-end">
 
-    <MudGrid Class="ma-2">
-        <MudItem xs="6">
-            <MudTextField @bind-Text="GlobalVariables.PlayerOneName" T="string" Placeholder="Enter first player name"></MudTextField>
+    <MudGrid Justify="Justify.SpaceEvenly" Class="ma-2">
+        <MudItem xs="8">
+            <MudTextField T="string" @bind-Value="_newPlayerName" Label="New Player"></MudTextField>
+        </MudItem>
+        <MudItem xs="4">
+
+            <MudButton OnClick="AddPlayer">Create</MudButton>
         </MudItem>
         <MudItem xs="6">
-            <MudTextField @bind-Text="GlobalVariables.PlayerTwoName" T="string" Placeholder="Enter second player name"></MudTextField>
+        <MudSelect @ref="_playerOneSelect" Label="Choose Player 1" @bind-Value="_playerOneValue" Variant="Variant.Outlined">
+            @foreach (var player in Players)
+            {
+                <MudSelectItem Value="@player">@player.Name</MudSelectItem>
+            }
+
+        </MudSelect>
+
         </MudItem>
         <MudItem xs="6">
-            <MudTextField @bind-Text="GlobalVariables.UmpireName" T="string" Placeholder="Enter your name"></MudTextField>
+
+        <MudSelect @ref="_playerTwoSelect" Label="Choose Player 2" @bind-Value="_playerTwoValue" Variant="Variant.Outlined">
+            @foreach (var player in Players)
+            {
+                <MudSelectItem Value="@player">@player.Name</MudSelectItem>
+            }
+
+        </MudSelect>
+
         </MudItem>
-        <MudItem xs="6">
-            <MudTextField @bind-Value="GlobalVariables.NumberOfSetsInGame" T="int" HelperText="Enter number of sets in match"></MudTextField>
+        <MudItem xs="4">
+            <MudTextField T="string" @bind-text="GlobalStore.Umpire.Name" Disabled="true" Label="Umpire"></MudTextField>
+        </MudItem>
+        <MudItem xs="4">
+            <MudTextField  @bind-Value="GlobalStore.NumberOfSetsInGame" T="int" HelperText="Enter number of sets in match"></MudTextField>
         </MudItem>
         <MudItem xs="12">
             <div class="d-flex align-center justify-center">
-                <MudButton Variant="Variant.Filled"
+                <MudButton Disabled="@(_playerOneValue is null || _playerTwoValue is null)" Variant="Variant.Filled"
                            Color="Color.Primary" 
                            OnClick="NavigateToMatch">New Match!</MudButton>
             </div>
@@ -37,11 +61,77 @@
 
 @code{
     private string _pathToPumpire = System.AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\net9.0\", @"Components\Images\pumpire.webp");
+    private string _newPlayerName = string.Empty;
+    private Player? _playerOneValue = null;
+    private Player? _playerTwoValue = null;
+    private List<Player> Players = [];
+    private MudSelect<Player> _playerOneSelect;
+    private MudSelect<Player> _playerTwoSelect;
 
-    private void NavigateToMatch()
+    private async Task NavigateToMatch()
     {
-        Console.WriteLine(_pathToPumpire);
+        GlobalStore.PlayerOne = _playerOneValue;
+        GlobalStore.PlayerTwo = _playerTwoValue;
+
+
+        Umpire umpire = GlobalStore.Umpire;
+
+        int numberOfSets = GlobalStore.NumberOfSetsInGame == 0 ? 5 : GlobalStore.NumberOfSetsInGame;
+
+        var addMatchResult = await TennisClient.AddMatch.ExecuteAsync(new AddMatchInput
+            {
+                Players = [_playerOneValue.Id, _playerTwoValue.Id],
+                UmpireId = umpire.Id
+            });
+
+        TennisMatch newMatch = new(_playerOneValue, _playerTwoValue, umpire, numberOfSets, addMatchResult.Data.AddMatch.Match.Id);
+        await newMatch.Umpire.StartNewMatch(addMatchResult.Data.AddMatch.Match.Games[0].Id, addMatchResult.Data.AddMatch.Match.Games[0].Sets[0].Id);
+        GlobalStore.CurrentMatch = newMatch;
         NavigationManager.NavigateTo("Match");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var playersResult = await TennisClient.GetPlayers.ExecuteAsync();
+
+        Players = playersResult.Data?.Players.Select(p => new Player
+        {
+            Id = p.Id,
+            Name = p.Name
+        }).ToList() ?? [];
+    }
+
+    private async Task AddPlayer()
+    {
+        var createResult = await TennisClient.AddPlayer.ExecuteAsync(new AddPlayerInput
+        {
+            Name = _newPlayerName
+        });
+
+        if (createResult.IsErrorResult())
+        {
+            return;
+        }
+
+        var player = new Player
+        {
+            Id = createResult.Data.AddPlayer.Player.Id,
+            Name = createResult.Data.AddPlayer.Player.Name
+        };
+
+        Players.Add(player);
+        if (_playerOneValue is not null && _playerTwoValue is not null) return;
+
+        if (_playerOneValue is null)
+        {
+            _playerOneValue = player;
+        } else
+        {
+            _playerTwoValue = player;
+
+        }
     }
 
 }

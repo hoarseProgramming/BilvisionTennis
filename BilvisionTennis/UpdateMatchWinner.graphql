@@ -1,0 +1,10 @@
+mutation UpdateMatchWinner($input: UpdateMatchWinnerInput!) {
+	updateMatchWinner(input: $input) {
+		match {
+			id
+			winner {
+				id
+			}
+		}
+	}
+}

@@ -1,0 +1,7 @@
+mutation AddRally($input: AddRallyInput!) {
+	addRally(input: $input) {
+		rally {
+			id
+		}
+	}
+}

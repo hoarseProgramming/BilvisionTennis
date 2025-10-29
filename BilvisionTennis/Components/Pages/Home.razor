@@ -1,10 +1,10 @@
 ﻿@page "/"
-@using BilvisionTennis.Frontend.Classes
-
+@using BilvisionTennis.Frontend.TennisGame
+@inject GlobalStore GlobalStore
 @inject NavigationManager NavigationManager
 @inject ITennisClient TennisClient
 
-<PageTitle>Welcome</PageTitle>
+<PageTitle>Pocket Umpire</PageTitle>
 <MudPaper Height="50vh" Class="d-flex justify-center">
     <MudImage Height="200" Width="1000" Src="Images/pumpire.webp"></MudImage>
 </MudPaper>
@@ -39,14 +39,14 @@
 @code{
     public string NewUmpireName { get; set; } = "";
     private string _pathToPumpire = System.AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\net9.0\", @"Components\Images\pumpire.webp");
-    private List<FEUmpire> umpires = new();
-    private FEUmpire? _choosenUmpire = null;
-    private MudSelect<FEUmpire> _umpireSelect;
+    private List<Umpire> umpires = new();
+    private Umpire? _choosenUmpire = null;
+    private MudSelect<Umpire> _umpireSelect;
 
     protected override async Task OnInitializedAsync()
     {
         var result = await TennisClient.GetUmpires.ExecuteAsync();
-        umpires = result.Data?.Umpires.Select(u => new FEUmpire
+        umpires = result.Data?.Umpires.Select(u => new Umpire(TennisClient)
         {
             Id = u.Id,
             Name = u.Name
@@ -64,7 +64,7 @@
             return;
         }
 
-        var umpire = new FEUmpire
+        var umpire = new Umpire(TennisClient)
             {
                 Id = createResult.Data.AddUmpire.Umpire.Id,
                 Name = createResult.Data.AddUmpire.Umpire.Name
@@ -76,7 +76,7 @@
 
     private void NavigateToMatchSettings()
     {
-        Console.WriteLine(_pathToPumpire);
+        GlobalStore.Umpire = _choosenUmpire;
         NavigationManager.NavigateTo("match-settings");
     }
 

@@ -1,13 +1,21 @@
 ﻿
 
 namespace BilvisionTennis.Frontend.TennisGame;
+
+using BilvisionTennis.Frontend.GraphQl;
 using static BilvisionTennis.Frontend.TennisGame.TennisPoints;
 
 
 public class Umpire
 {
+    private readonly ITennisClient _tennisClient;
+    public int Id { get; set; }
     public required string Name { get; set; }
     public TennisMatch? Match { get; set; }
+    public Umpire(ITennisClient tennisClient)
+    {
+        _tennisClient = tennisClient;
+    }
     public void DecideServerByCoinToss()
     {
         var random = new Random();
@@ -22,25 +30,61 @@ public class Umpire
             Match.PlayerTwo.IsServer = true;
         }
     }
-    public void StartNewMatch()
+    public async Task StartNewMatch(int gameId, int setId)
     {
         DecideServerByCoinToss();
-        StartNewSet(true);
+        await StartNewSet(true, setId, gameId);
     }
-    public void StartNewSet(bool isFirstSetOfMatch = false)
+    public async Task StartNewSet( bool isFirstSetOfMatch = false, int? setId = null, int? gameId = null)
     {
-        Match.CurrentSet = new();
+        if(isFirstSetOfMatch)
+        {
+            Match.CurrentSet = new Set { 
+                Id = (int)gameId
+            };
+
+            await StartNewGame(isFirstSetOfMatch, (int)setId);
+        }
+        else
+        {
+            var addGameResult = await _tennisClient.AddGame.ExecuteAsync(new AddGameInput
+            {
+                MatchId = Match.Id,
+                Number = Match.PlayerOne.SetsWon + Match.PlayerTwo.SetsWon + 1
+            });
+
+            Set newSet = new Set { Id = addGameResult.Data.AddGame.Game.Id };
+            Match.CurrentSet = newSet;
+            await StartNewGame(isFirstSetOfMatch, newSet.Id);
+        }
 
         Match.PlayerOne.GamesWon = 0;
         Match.PlayerTwo.GamesWon = 0;
 
-        StartNewGame(isFirstSetOfMatch);
     }
-    public void StartNewGame(bool isFirstGameOfMatch = false)
+    public async Task StartNewGame(bool isFirstGameOfMatch = false, int? gameId = null)
     {
-        Match.CurrentSet.CurrentGame = new();
+        if(isFirstGameOfMatch)
+        {
+            Match.CurrentSet.CurrentGame = new()
+            {
+                Id = (int)gameId
+            };
+        } else
+        {
+            var addSetResult = await _tennisClient.AddSet.ExecuteAsync(new AddSetInput
+            {
+                GameId = Match.CurrentSet.Id,
+                Number = Match.PlayerOne.GamesWon + Match.PlayerTwo.GamesWon + 1
+            });
 
-        Match.PlayerOne.PointsScored = 0;
+            Match.CurrentSet.CurrentGame = new()
+            {
+                Id = addSetResult.Data.AddSet.Set.Id
+            };
+        }
+
+            Match.PlayerOne.PointsScored = 0;
         Match.PlayerTwo.PointsScored = 0;
 
         if (!isFirstGameOfMatch)
@@ -50,26 +94,40 @@ public class Umpire
         }
     }
 
-    public void ScorePointToPlayer(int playerNumber)
+    public async Task ScorePointToPlayer(int playerNumber)
     {
         if (Match.CurrentSet.CurrentGame.HasWinner)
         {
             return;
         }
 
+        int shotNumber = Match.PlayerOne.PointsScored + Match.PlayerTwo.PointsScored + 1;
+
         if (playerNumber == 1)
         {
+            await _tennisClient.AddRally.ExecuteAsync(new AddRallyInput
+            {
+                ScorerId = Match.PlayerOne.Id,
+                SetId = Match.CurrentSet.CurrentGame.Id,
+                Number = shotNumber
+            });
             Match.PlayerOne.PointsScored++;
-            CalculateGameScore(winner: Match.PlayerOne, loser: Match.PlayerTwo);
+            await CalculateGameScore(winner: Match.PlayerOne, loser: Match.PlayerTwo);
         }
         else
         {
+            await _tennisClient.AddRally.ExecuteAsync(new AddRallyInput
+            {
+                ScorerId = Match.PlayerTwo.Id,
+                SetId = Match.CurrentSet.CurrentGame.Id,
+                Number = shotNumber
+            });
             Match.PlayerTwo.PointsScored++;
-            CalculateGameScore(winner: Match.PlayerTwo, loser: Match.PlayerOne);
+            await CalculateGameScore(winner: Match.PlayerTwo, loser: Match.PlayerOne);
         }
     }
 
-    public void CalculateGameScore(Player winner, Player loser)
+    public async Task CalculateGameScore(Player winner, Player loser)
     {
         if (winner.PointsScored == 4 && loser.PointsScored == 4)
         {
@@ -81,24 +139,29 @@ public class Umpire
         {
             Match.CurrentSet.CurrentGame.HasWinner = true;
             winner.GamesWon++;
-            CalculateSetScore(winner, loser);
+            await CalculateSetScore(winner, loser);
         }
 
         SetGameScore(winner, loser);
     }
-    public void CalculateSetScore(Player winner, Player loser)
+    public async Task CalculateSetScore(Player winner, Player loser)
     {
         if (winner.GamesWon >= 6 && winner.GamesWon - loser.GamesWon >= 2)
         {
             Match.CurrentSet.HasWinner = true;
             winner.SetsWon++;
-            CalculateMatchScore(winner, loser);
+            await CalculateMatchScore(winner, loser);
         }
     }
-    public void CalculateMatchScore(Player winner, Player loser)
+    public async Task CalculateMatchScore(Player winner, Player loser)
     {
         if (winner.SetsWon > Match.SetsInMatch / 2)
         {
+            var updateWinnerResult = await _tennisClient.UpdateMatchWinner.ExecuteAsync(new UpdateMatchWinnerInput
+            {
+                PlayerId = winner.Id,
+                MatchId = Match.Id
+            });
             Match.Winner = winner;
         }
     }
@@ -184,4 +247,6 @@ public class Umpire
             _ => $"{VerbalGamePoint.Deuce}"
         };
     }
+
+    public override string ToString() => Name;
 }

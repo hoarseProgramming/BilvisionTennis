@@ -8,6 +8,7 @@ type Query {
   match(id: Int!): Match
   umpires: [Umpire!]!
   umpire(id: Int!): Umpire
+  players: [Player!]!
 }
 
 type Mutation {
@@ -17,6 +18,7 @@ type Mutation {
   addRally(input: AddRallyInput!): AddRallyPayload!
   addSet(input: AddSetInput!): AddSetPayload!
   addUmpire(input: AddUmpireInput!): AddUmpirePayload!
+  updateMatchWinner(input: UpdateMatchWinnerInput!): UpdateMatchWinnerPayload!
 }
 
 type Game {
@@ -88,6 +90,11 @@ input AddGameInput {
   number: Int!
 }
 
+input UpdateMatchWinnerInput {
+  matchId: Int!
+  playerId: Int!
+}
+
 type AddGamePayload {
   game: Game
 }
@@ -110,6 +117,10 @@ type AddSetPayload {
 
 type AddUmpirePayload {
   umpire: Umpire
+}
+
+type UpdateMatchWinnerPayload {
+  match: Match
 }
 
 "The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."

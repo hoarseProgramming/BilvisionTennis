@@ -2,6 +2,7 @@
 
 public class TennisMatch
 {
+    public int Id { get; set; }
     public Player PlayerOne { get; }
     public Player PlayerTwo { get; }
     public Umpire Umpire { get; }
@@ -9,14 +10,14 @@ public class TennisMatch
     public Set CurrentSet { get; set; }
     public int SetsInMatch { get; }
 
-    public TennisMatch(string playerOneName, string playerTwoName, string umpireName, int setsInMatch)
+    public TennisMatch(Player playerOne, Player playerTwo, Umpire umpire, int setsInMatch, int matchId)
     {
-        PlayerOne = new() { Name = playerOneName };
-        PlayerTwo = new() { Name = playerTwoName };
-        Umpire = new() { Name = umpireName };
+        Id = matchId;
+        PlayerOne = playerOne;
+        PlayerTwo = playerTwo;
+        Umpire = umpire;
         Umpire.Match = this;
         SetsInMatch = setsInMatch;
-        Umpire.StartNewMatch();
     }
 
     public string Score()

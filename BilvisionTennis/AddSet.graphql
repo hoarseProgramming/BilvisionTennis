@@ -1,0 +1,7 @@
+mutation AddSet($input: AddSetInput!) {
+	addSet(input: $input) {
+		set {
+			id
+		}
+	}
+}

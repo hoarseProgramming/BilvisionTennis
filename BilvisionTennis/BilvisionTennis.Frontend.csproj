@@ -9,8 +9,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <GraphQL Remove="AddGame.graphql" />
+      <GraphQL Remove="AddMatch.graphql" />
       <GraphQL Remove="AddPlayer.graphql" />
+      <GraphQL Remove="AddRally.graphql" />
+      <GraphQL Remove="AddSet.graphql" />
       <GraphQL Remove="AddUmpire.graphql" />
+      <GraphQL Remove="UpdateMatchWinner.graphql" />
     </ItemGroup>
 
     <ItemGroup>
