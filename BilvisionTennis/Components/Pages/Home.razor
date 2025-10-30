@@ -77,7 +77,7 @@
                     m.Id
                 )
                 {
-                    Winner = new Player { Name = m.Winner.Name },
+                    Winner = new Player { Name = m.Winner?.Name ?? "None" },
                     Sets = m.Games.Select(g => new Set
                     {
                         Number = g.Number,

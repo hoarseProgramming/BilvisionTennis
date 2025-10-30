@@ -104,11 +104,11 @@
 	{
 		if (buttonClicked == _scorePointToPlayerOneButton)
 		{
-			GlobalStore.CurrentMatch.Umpire.ScorePointToPlayer(1);
+			await GlobalStore.CurrentMatch.Umpire.ScorePointToPlayer(1);
 		}
 		else if (buttonClicked == _scorePointToPlayerTwoButton)
 		{
-			GlobalStore.CurrentMatch.Umpire.ScorePointToPlayer(2);
+			await GlobalStore.CurrentMatch.Umpire.ScorePointToPlayer(2);
 		}
 		else if (buttonClicked == _startNextGameButton)
 		{
